@@ -146,10 +146,54 @@ const deleteClient = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "Client deleted successfully (Archived)"));
 });
 
+
+// @desc    Upload document for client
+// @route   POST /api/v1/clients/:id/documents
+// @access  Private
+const uploadClientDocument = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { docType } = req.body; // e.g., "Trade License", "Kebele ID"
+
+    if (!req.file) {
+        throw new ApiError(400, "No file uploaded");
+    }
+    if (!docType) {
+        throw new ApiError(400, "Document Type (docType) is required");
+    }
+
+    // Construct File URL (For MVP, it's a local path relative to server)
+    const fileUrl = `/temp/${req.file.filename}`;
+
+    // Update Client
+    const client = await Client.findOneAndUpdate(
+        { _id: id, createdBy: req.user._id },
+        {
+            $push: {
+                documents: {
+                    docType: docType,
+                    url: fileUrl,
+                    originalName: req.file.originalname,
+                    mimeType: req.file.mimetype
+                }
+            }
+        },
+        { new: true }
+    );
+
+    if (!client) {
+        throw new ApiError(404, "Client not found");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, client, "Document uploaded successfully"));
+});
+
 export {
     createClient,
     getClients,
     getClientById,
     updateClient,
-    deleteClient
+    deleteClient,
+    uploadClientDocument,
 };
