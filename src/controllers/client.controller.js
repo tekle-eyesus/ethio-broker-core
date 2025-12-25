@@ -95,4 +95,61 @@ const getClientById = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, client, "Client details fetched"));
 });
 
-export { createClient, getClients, getClientById };
+
+
+// @desc    Update client details
+// @route   PATCH /api/v1/clients/:id
+// @access  Private
+const updateClient = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    // Prevent critical field changes that might break data integrity
+    if (updates.type) {
+        delete updates.type;
+    }
+
+    const client = await Client.findOneAndUpdate(
+        { _id: id, createdBy: req.user._id }, // Ensure ownership
+        { $set: updates },
+        { new: true, runValidators: true } // Return updated doc & run schema validation
+    );
+
+    if (!client) {
+        throw new ApiError(404, "Client not found or unauthorized");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, client, "Client details updated successfully"));
+});
+
+// @desc    Soft delete client
+// @route   DELETE /api/v1/clients/:id
+// @access  Private
+const deleteClient = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // We do NOT use findOneAndDelete. We use Soft Delete.
+    const client = await Client.findOneAndUpdate(
+        { _id: id, createdBy: req.user._id },
+        { $set: { isActive: false } },
+        { new: true }
+    );
+
+    if (!client) {
+        throw new ApiError(404, "Client not found or unauthorized");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Client deleted successfully (Archived)"));
+});
+
+export {
+    createClient,
+    getClients,
+    getClientById,
+    updateClient,
+    deleteClient
+};

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createClient, getClients, getClientById } from "../controllers/client.controller.js";
+import { createClient, getClients, getClientById, updateClient, deleteClient } from "../controllers/client.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
@@ -11,6 +11,8 @@ router.route("/")
     .get(getClients);
 
 router.route("/:id")
-    .get(getClientById);
+    .get(getClientById)
+    .patch(updateClient)
+    .delete(deleteClient); // Soft delete
 
 export default router;
