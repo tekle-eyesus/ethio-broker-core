@@ -1,0 +1,31 @@
+{
+  "name": "ethio-broker-core",
+  "version": "1.0.0",
+  "description": "A compliant Insurance Broker Management System tailored for the Ethiopian market.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tekle-eyesus/ethio-broker-core.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tekle-eyesus/ethio-broker-core/issues"
+  },
+  "homepage": "https://github.com/tekle-eyesus/ethio-broker-core#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "mongoose": "^9.0.2",
+    "morgan": "^1.10.1"
+  }
+}
