@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { Carrier } from "../models/carrier.model.js";
+import { Carrier } from "../models/carrierModel.js";
 
 // @desc    Add a new Insurance Company
 // @route   POST /api/v1/carriers
