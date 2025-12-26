@@ -30,6 +30,21 @@ const createCarrier = asyncHandler(async (req, res) => {
     );
 });
 
+//@desc    Get a carrier by ID
+//@route   GET /api/v1/carriers/:id
+//@access  Private
+const getCarrierById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const carrier = await Carrier.findById(id);
+  if (!carrier || !carrier.isActive) {
+    throw new ApiError(404, "Carrier not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, carrier, "Carrier fetched successfully"));
+});
+
 // @desc    Get all active carriers
 // @route   GET /api/v1/carriers
 // @access  Private
@@ -77,4 +92,10 @@ const deleteCarrier = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Carrier removed (archived)"));
 });
 
-export { createCarrier, getCarriers, updateCarrier, deleteCarrier };
+export {
+  createCarrier,
+  getCarriers,
+  updateCarrier,
+  deleteCarrier,
+  getCarrierById,
+};
