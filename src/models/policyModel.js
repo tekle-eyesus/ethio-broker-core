@@ -60,6 +60,10 @@ const policySchema = new Schema(
       type: Number,
       default: 0, // Calculated: (premium * rate) / 100
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     status: {
       type: String,
       enum: ["Active", "Expired", "Cancelled", "Pending"],

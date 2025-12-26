@@ -50,7 +50,7 @@ const getPolicies = asyncHandler(async (req, res) => {
     expiringSoon,
   } = req.query;
 
-  const query = {};
+  const query = { isActive: true }; // Ensure only active policies are fetched
 
   // Filters
   if (status) query.status = status;
@@ -138,4 +138,74 @@ const uploadPolicyDocument = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, policy, "Policy document uploaded"));
 });
 
-export { createPolicy, getPolicies, getPolicyById, uploadPolicyDocument };
+// @desc    Update Policy Details
+// @route   PATCH /api/v1/policies/:id
+// @access  Private
+const updatePolicy = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  const policy = await Policy.findById(id);
+  if (!policy) {
+    throw new ApiError(404, "Policy not found");
+  }
+
+  if (updates.premiumAmount || updates.commissionRate) {
+    const newPremium = updates.premiumAmount || policy.premiumAmount;
+    const newRate = updates.commissionRate || policy.commissionRate;
+
+    updates.commissionAmount = (newPremium * newRate) / 100;
+  }
+
+  if (updates.endDate || updates.startDate) {
+    const end = updates.endDate ? new Date(updates.endDate) : policy.endDate;
+    const start = updates.startDate
+      ? new Date(updates.startDate)
+      : policy.startDate;
+    const now = new Date();
+
+    if (end < now) updates.status = "Expired";
+    else if (start > now) updates.status = "Pending";
+    else updates.status = "Active";
+  }
+
+  const updatedPolicy = await Policy.findByIdAndUpdate(
+    id,
+    { $set: updates },
+    { new: true, runValidators: true }
+  ).populate("client carrier");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedPolicy, "Policy updated successfully"));
+});
+
+// @desc    Soft Delete Policy
+// @route   DELETE /api/v1/policies/:id
+// @access  Private
+const deletePolicy = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const policy = await Policy.findByIdAndUpdate(
+    id,
+    { $set: { isActive: false } },
+    { new: true }
+  );
+
+  if (!policy) {
+    throw new ApiError(404, "Policy not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Policy deleted (archived) successfully"));
+});
+
+export {
+  createPolicy,
+  getPolicies,
+  getPolicyById,
+  uploadPolicyDocument,
+  updatePolicy,
+  deletePolicy,
+};
