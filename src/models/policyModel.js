@@ -85,7 +85,7 @@ const policySchema = new Schema(
 );
 
 // Middleware to calculate commission before saving
-policySchema.pre("save", function (next) {
+policySchema.pre("save", function () {
   if (this.premiumAmount && this.commissionRate) {
     this.commissionAmount = (this.premiumAmount * this.commissionRate) / 100;
   }
@@ -99,8 +99,6 @@ policySchema.pre("save", function (next) {
   } else {
     this.status = "Active";
   }
-
-  next();
 });
 
 export const Policy = mongoose.model("Policy", policySchema);
