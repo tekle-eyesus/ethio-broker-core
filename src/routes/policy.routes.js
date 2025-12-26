@@ -3,6 +3,8 @@ import {
   createPolicy,
   getPolicies,
   getPolicyById,
+  updatePolicy,
+  deletePolicy,
   uploadPolicyDocument,
 } from "../controllers/policy.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -13,8 +15,11 @@ const router = Router();
 router.use(verifyJWT);
 
 router.route("/").post(createPolicy).get(getPolicies);
-
-router.route("/:id").get(getPolicyById);
+router
+  .route("/:id")
+  .get(getPolicyById)
+  .patch(updatePolicy)
+  .delete(deletePolicy); // Soft delete
 
 router
   .route("/:id/documents")
