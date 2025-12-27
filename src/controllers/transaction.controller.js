@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Transaction } from "../models/transactionModel.js";
-import { Policy } from "../models/transactionModel.js";
+import { Policy } from "../models/policyModel.js";
 
 // @desc    Record a Payment (In or Out)
 // @route   POST /api/v1/finance/transactions
