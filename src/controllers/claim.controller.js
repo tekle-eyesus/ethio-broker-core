@@ -1,8 +1,8 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { Claim } from "../models/claim.model.js";
-import { Policy } from "../models/policy.model.js";
+import { Claim } from "../models/claimModel.js";
+import { Policy } from "../models/policyModel.js";
 
 // @desc    Register a new Claim
 // @route   POST /api/v1/claims
