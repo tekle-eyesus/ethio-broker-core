@@ -6,6 +6,7 @@ import clientRouter from "./routes/client.routes.js";
 import carrierRouter from "./routes/carrier.routes.js";
 import policyRouter from "./routes/policy.routes.js";
 import claimRouter from "./routes/claim.routes.js";
+import financeRouter from "./routes/finance.routes.js";
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use("/api/v1/clients", clientRouter);
 app.use("/api/v1/carriers", carrierRouter);
 app.use("/api/v1/policies", policyRouter);
 app.use("/api/v1/claims", claimRouter);
+app.use("/api/v1/finance", financeRouter);
 
 export { app };
